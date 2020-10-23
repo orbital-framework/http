@@ -132,7 +132,8 @@ abstract class Router {
             $pattern = preg_replace('/\(:([a-zA-Z0-9]+)\)/', '([a-z0-9-_]+)', $pattern);
             $pattern = '/^'. str_replace('/', '\/', $pattern). '$/i';
 
-            if( preg_match($pattern, $uri, $matches) OR $router['rule'] == $uri ){
+            if( preg_match($pattern, $uri, $matches)
+                OR $router['rule'] == $uri ){
 
                 $rule = $router['rule'];
                 $callback = $router['callback'];
@@ -311,7 +312,8 @@ abstract class Router {
             'options' => $options
         );
 
-        self::$routers[ $httpMethod ][] = $router;
+        self::$routers[ $httpMethod ][ $path ] = $router;
+
     }
 
     /**
@@ -466,8 +468,9 @@ abstract class Router {
      */
     public static function getCurrentUrl($useQuery = FALSE){
 
-        $location = ( $useQuery ) ? self::getActiveQuery() : self::getActiveUrl();
         $query = NULL;
+        $location = ( $useQuery )
+            ? self::getActiveQuery() : self::getActiveUrl();
 
         return self::getUrl($location, $query, TRUE);
     }
