@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Orbital\Http;
 
@@ -8,7 +9,7 @@ abstract class Session {
      * Session id
      * @var string
      */
-    public static $id = NULL;
+    public static $id = null;
 
     /**
      * Session data
@@ -21,7 +22,7 @@ abstract class Session {
      * @param boolean $overload
      * @return void
      */
-    public static function init($overload = TRUE){
+    public static function init(bool $overload = true): void {
 
         if( !session_id() ){
             session_start();
@@ -39,7 +40,7 @@ abstract class Session {
      * Return session ID
      * @return string
      */
-    public static function id(){
+    public static function id(): string {
 
         if( !self::$id ){
             self::$id = session_id();
@@ -52,10 +53,10 @@ abstract class Session {
      * Regenerate session id
      * @return string
      */
-    public static function regenerate(){
+    public static function regenerate(): string {
 
-        session_regenerate_id(FALSE);
-        self::$id = NULL;
+        session_regenerate_id(false);
+        self::$id = null;
 
         return self::id();
     }
@@ -63,10 +64,10 @@ abstract class Session {
     /**
      * Set session data
      * @param string|array $key
-     * @param string|NULL $value
+     * @param string $value
      * @return void
      */
-    public static function set($key, $value = NULL){
+    public static function set(string|array $key, string $value = null): void {
 
         if( is_array($key) AND is_null($value) ){
             self::$data = array_merge(self::$data, $key);
@@ -78,14 +79,14 @@ abstract class Session {
 
     /**
      * Retrieve session data
-     * @param mixed $key
+     * @param string $key
      * @return mixed
      */
-    public static function get($key = NULL){
+    public static function get(string $key = null): mixed {
 
         if( $key ){
             return ( array_key_exists($key, self::$data) )
-                ? self::$data[ $key ] : NULL;
+                ? self::$data[ $key ] : null;
         }
 
         return self::$data;
@@ -96,7 +97,7 @@ abstract class Session {
      * @param string $key
      * @return void
      */
-    public static function delete($key){
+    public static function delete(string $key): void {
 
         if( isset(self::$data[ $key ]) ){
             unset(self::$data[ $key ]);
@@ -108,8 +109,8 @@ abstract class Session {
      * Destroy session
      * @return boolean
      */
-    public static function destroy(){
-        self::$id = NULL;
+    public static function destroy(): bool {
+        self::$id = null;
         return session_destroy();
     }
 

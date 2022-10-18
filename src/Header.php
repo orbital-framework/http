@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Orbital\Http;
 
@@ -169,14 +170,14 @@ abstract class Header {
      * Register if Headers are already sent
      * @var boolean
      */
-    private static $sent = FALSE;
+    private static $sent = false;
 
     /**
      * Send HTTP Headers
      * @param boolean $clean
      * @return void
      */
-    public static function send($clean = TRUE){
+    public static function send(bool $clean = true): void {
 
         if( !headers_sent() ){
 
@@ -196,14 +197,14 @@ abstract class Header {
 
         }
 
-        self::$sent = TRUE;
+        self::$sent = true;
     }
 
     /**
      * Retrieve if HTTP Headers are sent
      * @return boolean
      */
-    public static function sent(){
+    public static function sent(): bool {
         return self::$sent;
     }
 
@@ -211,7 +212,7 @@ abstract class Header {
      * List HTTP Headers
      * @return array
      */
-    public static function listHeaders(){
+    public static function listHeaders(): array {
         return ( headers_sent() ) ? headers_list() : self::$headers;
     }
 
@@ -220,26 +221,8 @@ abstract class Header {
      * @param string $header
      * @return void
      */
-    public static function set($header){
+    public static function set(string $header): void {
         self::$headers[] = $header;
-    }
-
-    /**
-     * Set and redirect HTTP Header Location
-     * @see Header::set()
-     * @param string $url
-     * @param int $code
-     * @return void
-     */
-    public static function location($url, $code = 301){
-
-        self::set(array(
-            'Location: '. $url,
-            TRUE,
-            $code
-        ));
-
-        return self::send();
     }
 
     /**
@@ -248,7 +231,7 @@ abstract class Header {
      * @param string $charset
      * @return void
      */
-    public static function contentType($type, $charset = 'utf-8'){
+    public static function contentType(string $type, string $charset = 'utf-8'): void {
         $type = isset( self::$types[$type] ) ? self::$types[$type] : $type;
         self::set('Content-Type: '. $type. '; charset='. $charset);
     }
@@ -258,8 +241,24 @@ abstract class Header {
      * @param int $code
      * @return void
      */
-    public static function status($code = 200){
+    public static function status(int $code = 200): void {
         self::set('HTTP/1.1 '. $code. ' '. self::$status[$code]);
+    }
+
+    /**
+     * Set and redirect HTTP Header Location
+     * @see Header::set()
+     * @see Header::status()
+     * @param string $url
+     * @param int $code
+     * @return void
+     */
+    public static function location(string $url, int $code = 301): void {
+
+        self::set('Location: '. $url);
+        self::status($code);
+
+        return self::send();
     }
 
 }

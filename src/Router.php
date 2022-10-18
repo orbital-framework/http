@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Orbital\Http;
 
@@ -18,13 +19,13 @@ abstract class Router {
      * Router URL
      * @var string
      */
-    public static $url = NULL;
+    public static $url = null;
 
     /**
      * Router Query
      * @var string
      */
-    public static $query = NULL;
+    public static $query = null;
 
     /**
      * Active route
@@ -44,7 +45,7 @@ abstract class Router {
      * @var array
      */
     private static $routers = array(
-        # HEAD == GET
+        # HEAD === GET
         'GET' => array(),
         'POST' => array(),
         'PUT' => array(),
@@ -69,9 +70,9 @@ abstract class Router {
      * Retrieve router active URL
      * @return string
      */
-    public static function getActiveUrl(){
+    public static function getActiveUrl(): string {
 
-        if( self::$url == NULL ){
+        if( is_null(self::$url) ){
             self::processUrl();
         }
 
@@ -82,9 +83,9 @@ abstract class Router {
      * Retrieve router active query
      * @return string
      */
-    public static function getActiveQuery(){
+    public static function getActiveQuery(): string {
 
-        if( self::$query == NULL ){
+        if( is_null(self::$query) ){
             self::processUrl();
         }
 
@@ -95,7 +96,7 @@ abstract class Router {
      * Retrieve active route
      * @return array
      */
-    public static function getActiveRoute(){
+    public static function getActiveRoute(): array {
 
         if( !self::$route ){
 
@@ -116,7 +117,7 @@ abstract class Router {
      * @param string $method
      * @return array
      */
-    public static function getRoute($uri, $method){
+    public static function getRoute(string $uri, string $method): array {
 
         $route = array();
 
@@ -133,7 +134,7 @@ abstract class Router {
             $pattern = '/^'. str_replace('/', '\/', $pattern). '$/i';
 
             if( preg_match($pattern, $uri, $matches)
-                OR $router['rule'] == $uri ){
+                OR $router['rule'] === $uri ){
 
                 $rule = $router['rule'];
                 $callback = $router['callback'];
@@ -142,7 +143,7 @@ abstract class Router {
 
                 if( count($matches) > 1 ){
                     foreach( $matches as $key => $value ){
-                        if( $key == 0 ){
+                        if( $key === 0 ){
                             continue;
                         }
                         $parameters[] = $value;
@@ -177,12 +178,12 @@ abstract class Router {
      * Process request and run callback
      * @return void
      */
-    public static function runRequest(){
+    public static function runRequest(): void {
 
         $route = self::getActiveRoute();
 
         if( !$route ){
-            return self::runError(404, $route);
+            return self::runError(404, null, $route);
         }
 
         $options = $route['options'];
@@ -216,14 +217,14 @@ abstract class Router {
     /**
      * Force error on request
      * @param int $number
-     * @param mixed $exception
-     * @param mixed $last
+     * @param Exception $exception
+     * @param array $last
      * @return void
      */
-    public static function runError($number = 404, $exception = NULL, $last = NULL){
+    public static function runError(int $number = 404, Exception $exception = null, array $last = null): void {
 
         if( !isset(self::$errors[$number])
-            OR ($last AND $last['rule'] == $number) ){
+            OR ($last AND $last['rule'] === $number) ){
 
             if( $exception instanceof Exception ){
                 throw $exception;
@@ -253,7 +254,7 @@ abstract class Router {
      * Process request URL
      * @return void
      */
-    private static function processUrl(){
+    private static function processUrl(): void {
 
         $url = str_replace('/index.php', '', $_SERVER['PHP_SELF']);
 
@@ -279,11 +280,11 @@ abstract class Router {
      * @return void
      */
     public static function set(
-        $httpMethod,
-        $rule,
-        $callback,
-        $options = array()
-        ){
+        string $httpMethod,
+        string $rule,
+        string $callback,
+        array $options = array()
+        ): void {
 
         if( is_array($httpMethod) ){
 
@@ -322,7 +323,7 @@ abstract class Router {
      * @param string $callback
      * @return void
      */
-    public static function setError($number, $callback){
+    public static function setError(string $number, string $callback): void {
 
         self::$errors[$number] = array(
             'callback' => $callback
@@ -337,7 +338,7 @@ abstract class Router {
      * @param string $path
      * @return void
      */
-    public static function setPath($path){
+    public static function setPath(string $path): void {
 
         $path = '/'. trim($path, '/'). '/';
         $path = str_replace('//', '/', $path);
@@ -349,7 +350,7 @@ abstract class Router {
      * Retrieve path prefix to routers
      * @return string
      */
-    public static function getPath(){
+    public static function getPath(): string {
         return self::$path;
     }
 
@@ -358,7 +359,7 @@ abstract class Router {
      * @param string $string
      * @return string
      */
-    public static function createUri($string){
+    public static function createUri(string $string): string {
 
         $string = strtolower($string);
 
@@ -394,7 +395,7 @@ abstract class Router {
      * @param string $query
      * @return string
      */
-    public static function createUrl($url, $location = '', $query = NULL){
+    public static function createUrl(string $url, string $location = '', string $query = null): string {
 
         $url = trim($url, '/');
 
@@ -418,7 +419,7 @@ abstract class Router {
      * @param boolean $ignorePath
      * @return string
      */
-    public static function getUrl($location = '', $query = NULL, $ignorePath = TRUE){
+    public static function getUrl(string $location = '', string $query = null, bool $ignorePath = true): string {
 
         $url = App::get('url');
 
@@ -437,7 +438,7 @@ abstract class Router {
      * @param boolean $ignorePath
      * @return void
      */
-    public static function url($location = '', $query = NULL, $ignorePath = TRUE){
+    public static function url(string $location = '', string $query = null, bool $ignorePath = true): void {
         echo self::getUrl($location, $query, $ignorePath);
     }
 
@@ -447,8 +448,8 @@ abstract class Router {
      * @param string $query
      * @return string
      */
-    public static function getPathUrl($location = '', $query = NULL){
-        return self::getUrl($location, $query, FALSE);
+    public static function getPathUrl(string $location = '', string $query = null): string {
+        return self::getUrl($location, $query, false);
     }
 
     /**
@@ -457,8 +458,8 @@ abstract class Router {
      * @param string $query
      * @return void
      */
-    public static function pathUrl($location = '', $query = NULL){
-        echo self::getPathUrl($location, $query, FALSE);
+    public static function pathUrl(string $location = '', string $query = null): void {
+        echo self::getPathUrl($location, $query, false);
     }
 
     /**
@@ -466,13 +467,13 @@ abstract class Router {
      * @param boolean $useQuery
      * @return string
      */
-    public static function getCurrentUrl($useQuery = FALSE){
+    public static function getCurrentUrl(bool $useQuery = false): string {
 
-        $query = NULL;
+        $query = null;
         $location = ( $useQuery )
             ? self::getActiveQuery() : self::getActiveUrl();
 
-        return self::getUrl($location, $query, TRUE);
+        return self::getUrl($location, $query, true);
     }
 
     /**
@@ -480,7 +481,7 @@ abstract class Router {
      * @param boolean $useQuery
      * @return void
      */
-    public static function currentUrl($useQuery = FALSE){
+    public static function currentUrl(bool $useQuery = false): void {
         echo self::getCurrentUrl($useQuery);
     }
 

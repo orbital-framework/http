@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Orbital\Http;
 
@@ -19,9 +20,10 @@ abstract class View {
     /**
      * Define global variable ($view) from view level data
      * Requires view file if need
+     * @param string $file
      * @return void
      */
-    public static function process($file = NULL){
+    public static function process(string $file = null): void {
 
         $exists = isset( self::$data[ self::$level ] );
 
@@ -44,7 +46,7 @@ abstract class View {
      * @param mixed $data
      * @return string
      */
-    public static function get($file, $data = NULL){
+    public static function get(string $file, mixed $data = null): string {
 
         if( $data ){
             self::$level = self::$level + 1;
@@ -62,7 +64,7 @@ abstract class View {
 
                 unset(self::$data[ self::$level ]);
                 self::$level = self::$level - 1;
-                self::process(NULL);
+                self::process(null);
 
             }
 
@@ -79,7 +81,7 @@ abstract class View {
      * @param mixed $data
      * @return void
      */
-    public static function render($file, $data = NULL){
+    public static function render(string|array $file, mixed $data = null): void {
 
         if( is_array($file) ){
 
