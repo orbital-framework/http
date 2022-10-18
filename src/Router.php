@@ -183,7 +183,8 @@ abstract class Router {
         $route = self::getActiveRoute();
 
         if( !$route ){
-            return self::runError(404, null, $route);
+            self::runError(404, null, $route);
+            return;
         }
 
         $options = $route['options'];
@@ -203,15 +204,11 @@ abstract class Router {
         Header::send();
 
         try{
-            $result = App::runMethod(
-                $route['callback'],
-                $route['parameters']
-            );
+            App::runMethod($route['callback'], $route['parameters']);
         } catch( Exception $e ) {
-            $result = self::runError(500, $e, $route);
+            self::runError(500, $e, $route);
         }
 
-        return $result;
     }
 
     /**
@@ -279,12 +276,7 @@ abstract class Router {
      * @param array $options
      * @return void
      */
-    public static function set(
-        string $httpMethod,
-        string $rule,
-        string $callback,
-        array $options = array()
-        ): void {
+    public static function set(string $httpMethod, string $rule, string $callback, array $options = array()): void {
 
         if( is_array($httpMethod) ){
 
@@ -330,8 +322,6 @@ abstract class Router {
         );
 
     }
-
-    // URL METHODS
 
     /**
      * Set path prefix to routers
