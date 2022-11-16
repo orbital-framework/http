@@ -257,8 +257,8 @@ abstract class Header {
 
         self::set('Location: '. $url);
         self::status($code);
+        self::send();
 
-        return self::send();
     }
 
 }
