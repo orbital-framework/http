@@ -64,10 +64,10 @@ abstract class Session {
     /**
      * Set session data
      * @param string|array $key
-     * @param string $value
+     * @param string|null $value
      * @return void
      */
-    public static function set(string|array $key, string $value = null): void {
+    public static function set(string|array $key, string|null $value = null): void {
 
         if( is_array($key) AND is_null($value) ){
             self::$data = array_merge(self::$data, $key);
@@ -79,7 +79,7 @@ abstract class Session {
 
     /**
      * Retrieve session data
-     * @param string $key
+     * @param string|null $key
      * @return mixed
      */
     public static function get(string $key = null): mixed {

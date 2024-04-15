@@ -270,13 +270,13 @@ abstract class Router {
 
     /**
      * Set routers to APP
-     * @param string $httpMethod
+     * @param string|array $httpMethod
      * @param string $rule
      * @param string $callback
      * @param array $options
      * @return void
      */
-    public static function set(string $httpMethod, string $rule, string $callback, array $options = array()): void {
+    public static function set(string|array $httpMethod, string $rule, string $callback, array $options = array()): void {
 
         if( is_array($httpMethod) ){
 
